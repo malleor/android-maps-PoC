@@ -130,7 +130,6 @@ public class MapsActivity extends FragmentActivity implements
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMyMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Me").alpha(0));
     }
 
 
@@ -157,8 +156,13 @@ public class MapsActivity extends FragmentActivity implements
     public void onLocationChanged(Location location) {
         Log.i(TAG, "========== LOCATION CHANGED ==========");
         LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
-        mMyMarker.setPosition(pos);
-        mMyMarker.setAlpha(1);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 16));
+        if(mMyMarker == null) {
+            mMyMarker = mMap.addMarker(new MarkerOptions().position(pos).title("Me"));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(pos, 16));
+        }
+        else {
+            mMyMarker.setPosition(pos);
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(pos));
+        }
     }
 }
